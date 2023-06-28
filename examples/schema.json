@@ -1,0 +1,403 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer"
+        },
+        "measurement": {
+          "type": "string"
+        },
+        "system": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "format",
+        "version",
+        "measurement",
+        "system"
+      ]
+    },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "readout_os": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "readout_os"
+      ]
+    },
+    "infos": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "slices": {
+          "type": "integer"
+        },
+        "fov": {
+          "type": "integer"
+        },
+        "seqstring": {
+          "type": "string"
+        },
+        "reconstruction": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "slices",
+        "fov",
+        "seqstring",
+        "reconstruction"
+      ]
+    },
+    "instructions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/block"
+      },
+      "required": [
+        "main"
+      ]
+    },
+    "objects": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/object"
+      }
+    },
+    "arrays": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/array"
+      }
+    },
+    "equations": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/equation"
+      }
+    }
+  },
+  "required": [
+    "file",
+    "settings",
+    "infos",
+    "instructions",
+    "objects",
+    "arrays",
+    "equations"
+  ],
+  "$defs": {
+    "prop": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "enum": [
+                "equation",
+                "float"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "float"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "float": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "float"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "type": {
+                    "const": "equation"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "equation": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "equation"
+                ]
+              }
+            }
+          ],
+          "required": [
+            "type"
+          ]
+        }
+      ]
+    },
+    "mdh_type": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": [
+            "counter"
+          ]
+        },
+        "counter": {
+          "type": "integer"
+        },
+        "target": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "counter"
+      ]
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "print_counter": {
+          "type": "string"
+        },
+        "print_message": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/step"
+          }
+        }
+      },
+      "required": []
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/step"
+            }
+          },
+          "true": {
+            "$ref": "#/$defs/block"
+          },
+          "false": {
+            "$ref": "#/$defs/block"
+          },
+        "action": {
+          "type": "string"
+        },
+        "block": {
+          "type": "string"
+        },
+        "print_counter": {
+          "type": "string"
+        },
+        "print_message": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "counter": {
+          "type": "integer"
+        },
+        "increment": {
+          "type": "integer"
+        },
+        "target": {
+          "type": "integer"
+        },
+        "value": {
+          "type": "integer"
+        },
+        "range": {
+          "type": "integer"
+        },
+        "time": {
+          "type": "integer"
+        },
+        "frequency": {
+          "type": "integer"
+        },
+        "phase": {
+          "type": "integer"
+        },
+        "float": {
+          "type": "integer"
+        },
+        "amplitude": {
+          "$ref": "#/$defs/prop"
+        },
+        "gradients": {
+          "enum": [
+            "logical"
+          ]
+        },
+        "object": {
+          "type": "string"
+        },
+        "added_phase": {
+          "$ref": "#/$defs/prop"
+        },
+        "flipangle": {
+          "$ref": "#/$defs/prop"
+        },
+        "axis": {
+          "enum": [
+            "read",
+            "slice",
+            "phase"
+          ]
+        },
+        "mdh": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "line": {
+              "$ref": "#/$defs/mdh_type"
+            },
+            "first_scan_slice": {
+              "$ref": "#/$defs/mdh_type"
+            },
+            "last_scan_slice": {
+              "$ref": "#/$defs/mdh_type"
+            }
+          }
+        }
+      },
+      "required": [
+        "action"
+      ]
+    },
+    "equation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "equation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "equation"
+      ]
+    },
+    "array": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "size": {
+          "type": "integer"
+        },
+        "type": {
+          "enum": [
+            "float",
+            "complex_float"
+          ]
+        },
+        "encoding": {
+          "type": "string"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "size",
+        "type",
+        "encoding",
+        "data"
+      ]
+    },
+    "object": {
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "array": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "initial_phase": {
+          "type": "integer"
+        },
+        "thickness": {
+          "type": "integer"
+        },
+        "flipangle": {
+          "type": "integer"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "tail": {
+          "type": "integer"
+        },
+        "amplitude": {
+          "type": "number"
+        },
+        "samples": {
+          "type": "integer"
+        },
+        "dwelltime": {
+          "type": "integer"
+        },
+        "event": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "duration"
+      ]
+    }
+  }
+}
